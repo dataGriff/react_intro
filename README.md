@@ -88,3 +88,176 @@ function App() {
     "eject": "react-scripts eject"
   },
 ```
+
+## Components
+
+* React made up of multiple components that react renders in the DOM
+* Each components is content that has its own logic, so javascript and html
+* In boiler plat the only thing that is there us the "app" first (app.js, which has a function app()). Has to start with capital letter.
+* Its not html in app.js, its jsx language.
+* Babel converts jsx into html and renders it in DOM.
+* className in jsx, but then renders as "class" in html.
+
+* A component is essentially a function that returns something
+* What it returns is usually a jsx template
+* Then have to export that function so can be used elsewhere
+* Component tree starts with App.js, then component hierarchy comes off this
+* React snippets usful e.g. type sfc and then enter (stateless functional component)
+* Also with emmet type nav.navbar to create
+* Navbar.js we created is a file which is example of component
+
+```html
+<nav className="navbar">
+```
+
+* see it nested in app.js
+
+```javascript
+function App() {
+
+  return (
+    <div className="App">
+       <Navbar/>
+        <div className="content">
+          <h1 >App Component</h1>
+        </div>
+    </div>
+  );
+}
+```
+
+* can put app.js as this for simplest thing ever
+* Export at the end so can use in other files (index.js uses app as exported below)
+```javascript
+import logo from './logo.svg';
+import './App.css';
+
+function App() {
+  return (
+    <div className="App">
+        <div className="content">
+          <h1>App Component</h1>
+        </div>
+    </div>
+  );
+}
+
+export default App;
+```
+
+
+
+* Can't output booleans and objects as constants, everything else gets converted to string to be rendered in DOM
+
+* basic constants in function
+
+```javascript
+function App() {
+  const title = 'Welcome to the new blog';
+  const likes = 50;
+  const link = "https://www.google.com"
+
+  return (
+    <div className="App">
+        <div className="content">
+          <h1>{ title }</h1>
+          <p>Liked { likes } times</p>
+          <p>{ Math.random() }</p>
+          <p>{ ['this','is','array'] }</p>
+          <a href ={link}>Google </a>
+        </div>
+    </div>
+  );
+}
+```
+
+* Remember to export your components so that they can then be used in main app.js
+
+```javascript
+const Navbar = () => {
+    return ( 
+        <nav className="navbar">
+            <h1>The Dojo Blog</h1>
+            <div className="links">
+                <a href="/">Home</a>
+                <a href="/create" className="href">New Blog</a>
+            </div>
+        </nav>
+     );
+}
+ 
+export default Navbar;
+```
+
+* Nest in app.js
+
+```javascript
+import logo from './logo.svg';
+import './App.css';
+import Navbar from './Navbar'
+import Home from './Home'
+
+function App() {
+
+  return (
+    <div className="App">
+       <Navbar/>
+        <div className="content">
+          <Home />
+        </div>
+    </div>
+  );
+}
+
+export default App;
+```
+
+## Styling
+
+* You can have css files for each component e.g. App.css
+* But for this just going to use index.css to keep simple, taken from the tutorial github
+
+* Example of dynamic value with key value pairs
+* In css would be background-color, but as javascript it would think its a minus sign so uses camelCase.
+
+```javascript
+     <a href="/create" style={{
+                    color: "white", 
+                    backgroundColor: '#f1356d',
+                    borderRadius: '8px'
+                }}>New Blog</a>
+```
+
+## Events
+
+* Below are examples of click events
+* If you put function in handleClick() in the button jsx (with brackets) it will fire every time before even clicked
+* So fot the handleClickAgain example need to use syntax below to make anonymouse function and then will only fire on click
+* Note also the event object by default (e), used in both 
+
+```javascript
+const Home = () => {
+
+const handleClick = (e) => {
+    console.log('hello, ninjas', e);
+}
+
+const handleClickAgain = (name, e) => {
+    console.log('hello, ' + name, e.Target);
+}
+
+    return (
+        <div className="home">
+            <h2>Homepage</h2>
+            
+            <button onClick={handleClick}>Click Me</button>
+            <button onClick={(e) => handleClickAgain('griff',e)}>Click Me Again</button>
+        </div>
+      );
+}
+ 
+export default Home;
+```
+
+![Click Event in Console](imgs/click_event.png)
+![Event Object](imgs/event_object.png)
