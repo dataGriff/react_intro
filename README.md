@@ -293,3 +293,42 @@ const Home = () => {
      
     export default Home;
 ```
+
+## React Dev Tools 
+
+* Installed at start
+* See components under dev tools of chrome and can do cool stuff like view html, view files, see state
+
+![Dev Tools](imgs/dev_tools.png)
+
+## Lists
+
+* You can use state with a list of objects
+* Then use map function to cycle through and render
+* Must pass in a key to map which is unique id of each object
+
+```javascript
+import { useState } from 'react';
+
+const Home = () => {
+        const [blogs, setBlogs] = useState(
+            [
+                { title: 'My new website', body: 'lorem ipsum...', author: 'mario', id: 1 },
+                { title: 'Welcome party!', body: 'lorem ipsum...', author: 'yoshi', id: 2 },
+                { title: 'Web dev top tips', body: 'lorem ipsum...', author: 'mario', id: 3 }
+            ]
+        );
+        return (
+            <div className="home">
+                {blogs.map((blog) => (
+                    <div className="blog-preview" key={blog.id}>
+                        <h2>{blog.title}</h2>
+                        <p>Written by {blog.author}</p>
+                    </div>
+                ))}
+            </div>
+          );
+    }
+     
+    export default Home;
+```
