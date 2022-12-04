@@ -515,5 +515,243 @@ const Home = () => {
     );
 }
 
+
 export default Home;
+```
+
+## Conditional Loading Message
+
+* Below shows loading message before data returned
+* OnTimeout only been added to simulate slower API call
+
+```javascript
+import { useEffect, useState } from "react";
+import BlogList from "./BlogList";
+
+const Home = () => {
+    const [blogs, setBlogs] = useState(null);
+    const [isPending, setIsPending] = useState(true);
+
+    useEffect(() => {
+        setTimeout(() => {
+            fetch('http://localhost:8000/blogs')
+                .then(res => {
+                    return res.json();
+                })
+                .then(data => {
+                    setBlogs(data);
+                    setIsPending(false);
+                })
+        }, 1000);
+    }, [])
+
+    return (
+        <div className="home">
+            {isPending && <div>Loading...</div>}
+            {blogs && <BlogList blogs={blogs} />}
+        </div>
+    );
+}
+
+export default Home;
+```
+
+## Making Custom Hook
+
+* Function has to begin with "use..". e.g. useFetch()
+* So can make api data call generic with url that gets passed in
+
+```javascript
+import { useEffect, useState } from "react";
+
+const useFetch = (url) => {
+    // state
+    const [data, setData] = useState(null);
+    const [isPending, setIsPending] = useState(true);
+    const [error, setError] = useState(null);
+
+    useEffect(() => {
+        setTimeout(() => {
+            fetch(url)
+                .then(res => {
+                    if (!res.ok) { // error coming back from server
+                        throw Error('could not fetch the data for that resource');
+                    }
+                    return res.json();
+                })
+                .then(data => {
+                    setIsPending(false);
+                    setData(data);
+                    setError(null);
+                })
+                .catch(err => {
+                    // auto catches network / connection error
+                    setIsPending(false);
+                    setError(err.message);
+                })
+        }, 1000);
+    }, [url]);
+
+    return {data, isPending, error}
+}
+
+export default useFetch;
+```
+
+* Then call this in original file is much simpler and dynamic with url string
+
+```javascript
+import BlogList from "./BlogList";
+import useFetch from "./useFetch";
+
+const Home = () => {
+
+    const {data: blogs, isPending, error} = useFetch('http://localhost:8000/blogs')
+
+    return (
+        <div className="home">
+            {error && <div>{error}</div>}
+            {isPending && <div>Loading...</div>}
+            {blogs && <BlogList blogs={blogs} />}
+        </div>
+    );
+}
+
+export default Home;
+```
+
+## React Router
+
+* React intercepts server page requests and ibjects react code into DOM
+* Old websites go to server all the time, react router intercepts and injects dynamically
+* In code below @5 means version
+
+```bash
+npm install react-router-dom@5
+```
+
+* see switch and route below in code of div
+* So switch is basically a case statement
+* Route then dictates the path after your domain so "/" is the homepage, and then in that Route path you would show the Home component, which dictated how the homepage should look
+* You can add more routes with a path under the switch for each component you have, this allows one page to server multiple route componenets in react
+
+```javascript
+import Navbar from './Navbar'
+import Home from './Home'
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+
+function App() {
+
+  return (
+    <Router>
+      <div className="App">
+        <Navbar />
+        <div className="content">
+          <Switch>
+            <Route path="/">
+              <Home />
+            </Route>
+          </Switch>
+        </div>
+      </div>
+    </Router>
+  );
+}
+
+export default App;
+
+```
+
+## Exact Match Routes
+
+* When doing your switch you need to do them in the right order as it looks for matches so "/" is in all the paths
+* Or you can do exact matches... with exact syntax. see below.
+
+```javascript
+          <Switch>
+            <Route exact path="/">
+              <Home />
+            </Route>
+            <Route path="/create">
+              <Create />
+            </Route>
+          </Switch>
+```
+
+## Router Links
+
+* Below is how ensure don't go to server all the time, so that react router handles content changes in browser not via server. Needs special link tag.
+* In your code remove <a> tags and change to be <Link> tags, see below. This means react intercepts and doesn't go to server, so it routes the injected content in.
+* Makes it a lot quicker as not going to server.
+
+```javascript
+import { Link } from 'react-router-dom'
+
+const Navbar = () => {
+    return ( 
+        <nav className="navbar">
+            <h1>The Dojo Blog</h1>
+            <div className="links">
+                <Link to="/">Home</Link>
+                <Link to="/create" >New Blog</Link>
+            </div>
+        </nav>
+     );
+}
+ 
+export default Navbar;
+```
+
+## useEffect Cleanup with AbortController
+
+* So when going quickly between home and create an error comes up as still doing fetch
+* Need to abort this fetch if move away from it and handle that abort
+* If abort error just log to the console gracefully
+* Note create abort controller constant and pass that into the fetch and use the signal
+
+```javascript
+import { useEffect, useState } from "react";
+
+// This is a custom hook we made
+const useFetch = (url) => {
+    // state
+    const [data, setData] = useState(null);
+    const [isPending, setIsPending] = useState(true);
+    const [error, setError] = useState(null);
+
+    useEffect(() => {
+        const abortCont = new AbortController();
+
+        setTimeout(() => {
+            fetch(url, { signal: abortCont.signal })
+                .then(res => {
+                    if (!res.ok) { // error coming back from server
+                        throw Error('could not fetch the data for that resource');
+                    }
+                    return res.json();
+                })
+                .then(data => {
+                    setIsPending(false);
+                    setData(data);
+                    setError(null);
+                })
+                .catch(err => {
+                    // auto catches network / connection error
+                    if (err.name === 'AbortError') {
+                        console.log('useFetch Aborted');
+                    }
+                    else {
+                        setIsPending(false);
+                        setError(err.message);
+                    }
+                })
+        }, 1000);
+
+        return () => abortCont.abort();
+    }, [url]);
+
+    return { data, isPending, error }
+}
+
+export default useFetch;
 ```
