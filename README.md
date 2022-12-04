@@ -339,3 +339,48 @@ const Home = () => {
      
     export default Home;
 ```
+
+## Reusable Components & Props
+
+* Can take out chunks of code want to reuse and make into component
+* Notice "props" feed in of blogs and title that are passed in calling script 
+
+```javascript
+const BlogList = (
+    //props
+    { blogs, title }
+) => {
+    // const blogs = props.blogs;
+    // const title = props.title;
+    return (
+
+        <div className="blog-list">
+            <h2>{title}</h2>
+            {blogs.map((blog) => (
+                <div className="blog-preview" key={blog.id}>
+                    <h2>{blog.title}</h2>
+                    <p>Written by {blog.author}</p>
+                </div>
+            ))}
+        </div>
+    );
+}
+
+export default BlogList;
+```
+
+* Calling script
+
+```javascript
+...
+    return (
+        <div className="home">
+            <BlogList blogs={blogs} title="All Blogs!"/>
+        </div>
+    );
+...
+```
+
+## Reusing Components
+
+
