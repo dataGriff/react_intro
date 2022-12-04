@@ -449,6 +449,7 @@ useEffect(() => {
 ## useEffect Dependencies
 
 * Pass useEffect a dependency array, this can filter when the render occurs as you may not want to rerender page every time
+* If array passes in is empty will only run on first page load
 * See below useEffect only occurs when state of "name" changes as passed into dependency array
 
 ```javascript
@@ -470,4 +471,17 @@ useEffect(() => {
 
 ## Using JSON Server
 
+* Create json file with data, see links at start of ReadMe
 
+```bash
+npm install json-server
+```
+
+* Create new terminal to run json server, ensure separate to your react app so use different port
+
+```bash
+npx json-server --watch data/db.json --port 8000
+```
+
+* You can then go to http://localhost:8000/blogs, which is a fake REST endpoint we can use
+* Actually has GET, GET {id}, POST, DELETE {id}
