@@ -755,3 +755,57 @@ const useFetch = (url) => {
 
 export default useFetch;
 ```
+
+## Router Parameters
+
+* /blog/123 path. How to do this to get to BlogDetails, which is a new component.
+* So in your switch with routes...
+
+```javascript
+      <Route path="/blogs/:id">
+              <BlogDetails />
+            </Route>
+```
+
+* then your initial simple blog details component looks like this
+
+```javascript
+import { useParams } from "react-router-dom";
+
+const BlogDetails = () => {
+const { id } = useParams();
+
+    return ( 
+        <div className="blog-details">
+            <h2>Blog Details - { id }</h2>
+        </div>
+     );
+}
+ 
+export default BlogDetails;
+```
+
+* then you can get to this page in your blog list for example by putting the id into a link
+
+```javascript
+import { Link } from "react-router-dom";
+
+const BlogList = ({ blogs }) => {
+  return (
+    <div className="blog-list">
+      {blogs.map(blog => (
+        <div className="blog-preview" key={blog.id} >
+          <Link to={`/blogs/${blog.id}`}>
+            <h2>{blog.title}</h2>
+            <p>Written by {blog.author}</p>
+          </Link>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+export default BlogList;
+```
+
+## Reusing Custom Hooks
