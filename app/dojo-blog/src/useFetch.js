@@ -14,7 +14,7 @@ const useFetch = (url) => {
             fetch(url, { signal: abortCont.signal })
                 .then(res => {
                     if (!res.ok) { // error coming back from server
-                        throw Error('could not fetch the data for that resource');
+                        throw Error('Could not fetch the data for that resource.');
                     }
                     return res.json();
                 })
