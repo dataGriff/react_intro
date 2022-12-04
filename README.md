@@ -485,3 +485,35 @@ npx json-server --watch data/db.json --port 8000
 
 * You can then go to http://localhost:8000/blogs, which is a fake REST endpoint we can use
 * Actually has GET, GET {id}, POST, DELETE {id}
+
+## GET with JSON Server
+
+* Sets blogs as NULL then populates from fake json server
+* Initially blogs are NULL which would cause error, so put condition in bloglist component call to ensure "blogs" is not null. Has to evaluate to true with && clause, if not true doesn't both doing second bit
+
+```javascript
+import { useEffect, useState } from "react";
+import BlogList from "./BlogList";
+
+const Home = () => {
+    const [blogs, setBlogs] = useState(null)
+
+    useEffect(() => {
+        fetch('http://localhost:8000/blogs')
+            .then(res => {
+                return res.json();
+            })
+            .then(data => {
+                setBlogs(data);
+            })
+    }, [])
+
+    return (
+        <div className="home">
+            {blogs && <BlogList blogs={blogs} />}
+        </div>
+    );
+}
+
+export default Home;
+```
