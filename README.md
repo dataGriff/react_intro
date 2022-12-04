@@ -888,3 +888,190 @@ export default Create;
 
 ## Submit Events
 
+* So below handles the submit event of the form
+* See handleSubmit function and what it does
+* Clicking button / submit form would refresh page, so first we prevent that with preventDefault
+* Then we create a blog object from the three pieces of state
+* We can turn this into a part of POST request in next section so add a blog
+
+```javascript
+import { useState } from "react";
+
+const Create = () => {
+    //state
+    const [title, setTitle] = useState('');
+    const [body, setBody] = useState('');
+    const [author, setAuthor] = useState('Mario');
+
+    const handleSubmit = (e) => {
+        e.preventDefault(); //stops page refresh
+        const blog = {title, body, author};
+        console.log(blog);
+    }
+
+    return ( 
+        <div className="create">
+            <h2>Add a New Blog</h2>
+            <form onSubmit={handleSubmit}>
+                <label>Blog Title</label>
+                <input
+                type="text"
+                required
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                />
+                 <label>Blog body:</label>
+                <textarea
+                required
+                value={body}
+                onChange={(e) => setBody(e.target.value)}
+                ></textarea>
+                <label>Blog author:</label>
+                <select
+                value={author}
+                onChange={(e) => setAuthor(e.target.value)}
+                >
+                    <option value="mario">mario</option>
+                    <option value="yoshi">yoshi</option>
+                </select> 
+                <button>Add Blog</button>
+            </form>
+        </div>
+     );
+}
+ 
+export default Create;
+```
+
+## Making a POST Request
+
+* below shows making a simple POST request with the form state sorted above
+* note the ispending state and how that impacts what the button looks like
+
+```javascript
+import { useState } from "react";
+
+const Create = () => {
+    //state
+    const [title, setTitle] = useState('');
+    const [body, setBody] = useState('');
+    const [author, setAuthor] = useState('Mario');
+    const [isPending, setIsPending] = useState(false);
+
+    const handleSubmit = (e) => {
+        e.preventDefault(); //stops page refresh
+        const blog = {title, body, author};
+        setIsPending(true);
+        
+        fetch('http://localhost:8000/blogs', {
+            method: 'POST',
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify(blog)
+        }).then(() => {
+            console.log("new blog added")
+            setIsPending(false)
+        })
+
+    }
+
+    return ( 
+        <div className="create">
+            <h2>Add a New Blog</h2>
+            <form onSubmit={handleSubmit}>
+                <label>Blog Title</label>
+                <input
+                type="text"
+                required
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                />
+                 <label>Blog body:</label>
+                <textarea
+                required
+                value={body}
+                onChange={(e) => setBody(e.target.value)}
+                ></textarea>
+                <label>Blog author:</label>
+                <select
+                value={author}
+                onChange={(e) => setAuthor(e.target.value)}
+                >
+                    <option value="mario">mario</option>
+                    <option value="yoshi">yoshi</option>
+                </select> 
+                { !isPending && <button>Add Blog</button> }
+                { isPending && <button disabled>Adding Blog...</button> }
+            </form>
+        </div>
+     );
+}
+ 
+export default Create;
+```
+
+## Programmatic Redirects
+
+* you can use history to go forward or back with go method
+* or use push as below to redirect to homepage
+
+```javascript
+    const history = useHistory();
+
+    const handleSubmit = (e) => {
+        e.preventDefault(); //stops page refresh
+        const blog = {title, body, author};
+        setIsPending(true);
+        
+        fetch('http://localhost:8000/blogs', {
+            method: 'POST',
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify(blog)
+        }).then(() => {
+            console.log("new blog added");
+            setIsPending(false);
+            //history.go(-1);
+            history.push('/');
+        })
+
+    }
+```
+
+## Delete Requests
+
+* Below you can see how a DELETE request is sent on a click handle which removes blog of particular id
+
+```javascript
+import { useHistory, useParams } from "react-router-dom";
+import useFetch from "./useFetch";
+
+const BlogDetails = () => {
+    const { id } = useParams();
+    const { data: blog, error, isPending } = useFetch('http://localhost:8000/blogs/' + id);
+    const history = useHistory();
+
+    const handleClick = () => {
+        fetch('http://localhost:8000/blogs/' + blog.id, {
+            method: 'DELETE'
+        }).then(() => {
+            history.push('/');
+        })
+    }
+
+    return (
+        <div className="blog-details">
+            {isPending && <div>Loading...</div>}
+            {error && <div>{error}</div>}
+            {blog && (
+                <article>
+                    <h2>{blog.title}</h2>
+                    <p>Written by {blog.author}</p>
+                    <div>{blog.body}</div>
+                    <button onClick={handleClick}>Delete Blog</button>
+                </article>
+            )}
+        </div>
+    );
+}
+
+export default BlogDetails;
+```
