@@ -383,4 +383,91 @@ export default BlogList;
 
 ## Reusing Components
 
+* Example reusing with a filter...
+
+```javascript
+  return (
+        <div className="home">
+            <BlogList blogs={blogs} title="All blogs"/>
+            <BlogList blogs={blogs.filter((blog) => blog.author === 'mario')} title="Marios blogs"/>
+        </div>
+```
+
+## Functions as Props
+
+* Pass function as prop as state handle in parent component so need to do it there, but actioned by the child component
+
+```javascript
+const handleDelete = (id) => {
+    const newBlogs = blogs.filter(blog => blog.id != id);
+    setBlogs(newBlogs);
+}
+
+    return (
+        <div className="home">
+            <BlogList blogs={blogs} title="All blogs" handleDelete={handleDelete}/>
+        </div>
+    );
+}
+```
+
+* child calls it
+
+```javascript
+const BlogList = ({ blogs, title, handleDelete }) => {
+
+    return (
+
+        <div className="blog-list">
+            <h2>{title}</h2>
+            {blogs.map((blog) => (
+                <div className="blog-preview" key={blog.id}>
+                    <h2>{blog.title}</h2>
+                    <p>Written by {blog.author}</p>
+                    <button onClick={() => handleDelete(blog.id)}>Delete Blog</button>
+                </div>
+            ))}
+        </div>
+    );
+}
+
+export default BlogList;
+```
+
+## useEffect Hook
+
+* Runs on every render, so useful for this
+* So could be if any data changes you want to rerender to make sure up to date
+
+```javascript
+useEffect(() => {
+    console.log('use effect run');
+    console.log(blogs);
+});
+```
+
+## useEffect Dependencies
+
+* Pass useEffect a dependency array, this can filter when the render occurs as you may not want to rerender page every time
+* See below useEffect only occurs when state of "name" changes as passed into dependency array
+
+```javascript
+...
+    const [name, setName] = useState('mario');
+
+    useEffect(() => {
+        console.log('use effect run');
+        console.log(name);
+    }, [name]);
+
+    return (
+        <div className="home">
+            <BlogList blogs={blogs} title="All blogs" handleDelete={handleDelete} />
+            <button onClick={() => setName('luigi')}>change name</button>
+        </div>
+...
+```
+
+## Using JSON Server
+
 
