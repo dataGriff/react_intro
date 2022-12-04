@@ -837,3 +837,54 @@ const {data: blog, error, isPending} = useFetch('http://localhost:8000/blogs/' +
  
 export default BlogDetails;
 ```
+
+## Controlled Inputs (forms)
+
+* below shows example of collecting inputs and adding as state to the form
+* Note the onchange events and the setting of each property
+
+```javascript
+import { useState } from "react";
+
+const Create = () => {
+    //state
+    const [title, setTitle] = useState('');
+    const [body, setBody] = useState('');
+    const [author, setAuthor] = useState('Mario');
+
+    return ( 
+        <div className="create">
+            <h2>Add a New Blog</h2>
+            <form>
+                <label>Blog Title</label>
+                <input
+                type="text"
+                required
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                />
+                 <label>Blog body:</label>
+                <textarea
+                required
+                value={body}
+                onChange={(e) => setBody(e.target.value)}
+                ></textarea>
+                <label>Blog author:</label>
+                <select
+                value={author}
+                onChange={(e) => setAuthor(e.target.value)}
+                >
+                    <option value="mario">mario</option>
+                    <option value="yoshi">yoshi</option>
+                </select> 
+                <button>Add Blog</button>
+            </form>
+        </div>
+     );
+}
+ 
+export default Create;
+```
+
+## Submit Events
+
