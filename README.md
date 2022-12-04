@@ -1075,3 +1075,30 @@ const BlogDetails = () => {
 
 export default BlogDetails;
 ```
+
+## 404 Page for when user goes to page witout route
+
+* Make a NotFound.js file
+
+```javascript
+import { Link } from 'react-router-dom'
+
+const NotFound = () => {
+    return ( <div className="not-found">
+        <h2>Sorry</h2>
+        <p>That page cannot be found</p>
+        <Link to="/">Go to the homepage...
+        </Link>
+    </div> );
+}
+ 
+export default NotFound;
+```
+
+* then put this in your route at the bottom
+
+```javascript
+    <Route path="*">
+              <NotFound />
+            </Route>
+```
