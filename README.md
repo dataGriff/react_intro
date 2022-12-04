@@ -1,5 +1,10 @@
 * [Course Walkthrough](https://www.youtube.com/playlist?list=PL4cUxeGkcC9gZD-Tvwfod2gaISzfRiP9d)
 * [github](https://github.com/iamshaunjp/Complete-React-Tutorial)
+* [Json Server Videos](https://www.youtube.com/watch?v=mAqYJF-yxO8&list=PL4cUxeGkcC9i2v2ZqJgydXIcRq_ZizIdD&index=1&t=0s)
+* [Json Server blog](https://medium.com/codingthesmartway-com-blog/create-a-rest-api-with-json-server-36da8680136d)
+* [Environment Files](https://trekinbami.medium.com/using-environment-variables-in-react-6b0a99d83cf5)
+* [Simple CRUD React Json Server](https://medium.com/weekly-webtips/use-react-with-json-server-and-create-simple-crud-app-b2bf58cd4558)
+* [Generte Mock Json Data](https://itnext.io/how-to-generate-mock-data-using-faker-js-and-json-server-1d17007a08e4)
 
 ## Requirements
 
@@ -9,6 +14,8 @@
 * [React Dev Tools](https://reactjs.org/blog/2015/09/02/new-react-developer-tools.html#installation)
 
 ![react dev tools](imgs/react_dev_tools.png)
+
+##
 
 ## Setup
 
